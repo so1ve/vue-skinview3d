@@ -1,0 +1,66 @@
+{
+  "name": "pkg-name",
+  "version": "0.0.0",
+  "packageManager": "pnpm@8.6.1",
+  "author": "Ray <i@mk1.io> (@so1ve)",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/so1ve/pkg-name#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/so1ve/pkg-name.git"
+  },
+  "bugs": {
+    "url": "https://github.com/so1ve/pkg-name/issues"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "pkgroll",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "nr build",
+    "release": "bumpp --commit --push --tag && pnpm publish",
+    "start": "tsx src/index.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "watch": "pkgroll --watch"
+  },
+  "devDependencies": {
+    "@antfu/ni": "^0.21.3",
+    "@so1ve/eslint-config": "^0.101.0",
+    "@types/node": "^18.16.6",
+    "bumpp": "^9.1.0",
+    "eslint": "^8.40.0",
+    "pkgroll": "^1.10.0",
+    "prettier": "^2.8.8",
+    "tsx": "^3.12.7",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.5",
+    "vitest": "^0.32.0"
+  }
+}
