@@ -1,11 +1,4 @@
-import {
-  defineComponent,
-  h,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from "vue";
+import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
 import { SkinViewer } from "skinview3d";
 
 export const SkinView3d = defineComponent({
@@ -27,43 +20,36 @@ export const SkinView3d = defineComponent({
     },
   },
   setup: (props, { expose }) => {
-    const viewer = ref<SkinViewer>();
+    const viewer = shallowRef<SkinViewer>();
     const canvasRef = ref<HTMLCanvasElement>();
 
     expose({ viewer });
 
-    onMounted(() => {
+    const stop = watchPostEffect((onCleanup) => {
+      if (!canvasRef.value) {
+        return;
+      }
+
       viewer.value = new SkinViewer({
         canvas: canvasRef.value,
-        width: props.width,
-        height: props.height,
       });
 
-      props.skinUrl && viewer.value.loadSkin(props.skinUrl);
-      props.capeUrl && viewer.value.loadCape(props.capeUrl);
+      onCleanup(() => {
+        stop();
+      });
     });
 
-    onBeforeUnmount(() => {
-      viewer.value?.dispose();
+    watchPostEffect(() => {
+      viewer.value?.setSize(Number(props.width), Number(props.height));
     });
 
-    watch([() => props.width, () => props.height], ([newWidth, newHeight]) => {
-      viewer.value?.setSize(Number(newWidth), Number(newHeight));
+    watchPostEffect(() => {
+      props.skinUrl && viewer.value?.loadSkin(props.skinUrl);
     });
 
-    watch(
-      () => props.skinUrl,
-      (newSkin) => {
-        newSkin && viewer.value?.loadSkin(newSkin);
-      },
-    );
-
-    watch(
-      () => props.capeUrl,
-      (newCape) => {
-        newCape && viewer.value?.loadCape(newCape);
-      },
-    );
+    watchPostEffect(() => {
+      props.capeUrl && viewer.value?.loadCape(props.capeUrl);
+    });
 
     return () => h("canvas", { ref: canvasRef });
   },
