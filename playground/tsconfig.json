@@ -9,7 +9,7 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true
-  },
-  "exclude": ["playground"]
+    "skipDefaultLibCheck": true,
+    "noEmit": true
+  }
 }
