@@ -7,8 +7,7 @@ import {
   RunningAnimation,
   WalkingAnimation,
 } from "skinview3d";
-
-import { SkinView3d } from "../../src";
+import { SkinView3d } from "vue-skinview3d";
 
 const availableAnimations = {
   idle: new IdleAnimation(),
