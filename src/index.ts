@@ -1,5 +1,20 @@
+import type { PropType } from "vue";
 import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
 import { SkinViewer } from "skinview3d";
+
+import type { Layers } from "./types";
+
+export * from "./types";
+
+const LAYER_PARTS = [
+  "head",
+  "body",
+  "rightArm",
+  "leftArm",
+  "rightLeg",
+  "leftLeg",
+] as const;
+const LAYER_TYPES = ["inner", "outer"] as const;
 
 export const SkinView3d = defineComponent({
   name: "SkinView3d",
@@ -29,6 +44,27 @@ export const SkinView3d = defineComponent({
     enablePan: {
       type: Boolean,
       default: false,
+    },
+    layers: {
+      type: Object as PropType<Layers>,
+      default: () => ({
+        inner: {
+          head: true,
+          body: true,
+          rightArm: true,
+          leftArm: true,
+          rightLeg: true,
+          leftLeg: true,
+        },
+        outer: {
+          head: true,
+          body: true,
+          rightArm: true,
+          leftArm: true,
+          rightLeg: true,
+          leftLeg: true,
+        },
+      }),
     },
   },
   setup: (props, { expose }) => {
@@ -73,6 +109,18 @@ export const SkinView3d = defineComponent({
 
     watchPostEffect(() => {
       viewer.value && (viewer.value.controls.enablePan = props.enablePan);
+    });
+
+    watchPostEffect(() => {
+      if (!viewer.value) {
+        return;
+      }
+      for (const part of LAYER_PARTS) {
+        for (const layer of LAYER_TYPES) {
+          viewer.value.playerObject.skin[part][`${layer}Layer`].visible =
+            props.layers[layer][part];
+        }
+      }
     });
 
     return () => h("canvas", { ref: canvasRef });
