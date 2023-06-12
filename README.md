@@ -1,8 +1,8 @@
 # vue-skinview3d
 
-[![NPM version](https://img.shields.io/npm/v/vue-skinview3d?color=a1b858&label=)](https://www.npmjs.com/package/vue-skinview3d)
+Vue binding of [skinview3d](https://github.com/bs-community/skinview3d).
 
-## 💎 Features
+[![NPM version](https://img.shields.io/npm/v/vue-skinview3d?color=a1b858&label=)](https://www.npmjs.com/package/vue-skinview3d)
 
 ## 📦 Installation
 
