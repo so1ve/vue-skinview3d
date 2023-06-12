@@ -52,7 +52,7 @@
     "play": "npm -C playground run dev",
     "prepublishOnly": "nr build",
     "release": "bumpp --commit --push --tag && pnpm publish",
-    "typecheck": "tsc --noEmit && npm -C playground run typecheck"
+    "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
     "skinview3d": "3.0.0-alpha.1"
