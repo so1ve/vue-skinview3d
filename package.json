@@ -45,6 +45,7 @@
   },
   "scripts": {
     "build": "unbuild",
+    "dev": "nr play",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "play": "npm -C playground run dev",
