@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, watchPostEffect } from "vue";
+import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
 import { SkinViewer } from "skinview3d";
 
 export const SkinView3d = defineComponent({
@@ -20,26 +20,22 @@ export const SkinView3d = defineComponent({
     },
   },
   setup: (props, { expose }) => {
-    const viewer = ref<SkinViewer>();
+    const viewer = shallowRef<SkinViewer>();
     const canvasRef = ref<HTMLCanvasElement>();
 
     expose({ viewer });
 
-    watchPostEffect((onCleanup) => {
+    const stop = watchPostEffect((onCleanup) => {
       if (!canvasRef.value) {
         return;
       }
+
       viewer.value = new SkinViewer({
         canvas: canvasRef.value,
-        width: props.width,
-        height: props.height,
       });
 
-      props.skinUrl && viewer.value.loadSkin(props.skinUrl);
-      props.capeUrl && viewer.value.loadCape(props.capeUrl);
-
       onCleanup(() => {
-        viewer.value?.dispose();
+        stop();
       });
     });
 
