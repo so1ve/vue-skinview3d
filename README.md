@@ -14,8 +14,7 @@ $ pnpm add vue-skinview3d
 
 ## 🚀 Usage
 
-```ts
-```
+Please see [playground](./playground)
 
 ## 📝 License
 
