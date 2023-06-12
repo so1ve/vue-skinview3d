@@ -1,17 +1,17 @@
 {
-  "name": "pkg-name",
+  "name": "vue-skinview3d",
   "version": "0.0.0",
   "packageManager": "pnpm@8.6.1",
   "author": "Ray <i@mk1.io> (@so1ve)",
   "description": "",
   "keywords": [],
-  "homepage": "https://github.com/so1ve/pkg-name#readme",
+  "homepage": "https://github.com/so1ve/vue-skinview3d#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/so1ve/pkg-name.git"
+    "url": "git+https://github.com/so1ve/vue-skinview3d.git"
   },
   "bugs": {
-    "url": "https://github.com/so1ve/pkg-name/issues"
+    "url": "https://github.com/so1ve/vue-skinview3d/issues"
   },
   "license": "MIT",
   "sideEffects": false,
@@ -40,27 +40,31 @@
     "access": "public"
   },
   "scripts": {
-    "build": "pkgroll",
+    "build": "unbuild",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "play": "npm -C playground run dev",
     "prepublishOnly": "nr build",
     "release": "bumpp --commit --push --tag && pnpm publish",
     "start": "tsx src/index.ts",
-    "test": "vitest",
-    "typecheck": "tsc --noEmit",
-    "watch": "pkgroll --watch"
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "skinview3d": "3.0.0-alpha.1"
   },
   "devDependencies": {
     "@antfu/ni": "^0.21.3",
     "@so1ve/eslint-config": "^0.101.0",
     "@types/node": "^18.16.6",
+    "@vue/runtime-core": "^3.3.4",
     "bumpp": "^9.1.0",
     "eslint": "^8.40.0",
-    "pkgroll": "^1.10.0",
     "prettier": "^2.8.8",
     "tsx": "^3.12.7",
     "typescript": "^5.0.4",
-    "vite": "^4.3.5",
-    "vitest": "^0.32.0"
+    "unbuild": "^1.2.1"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.4"
   }
 }

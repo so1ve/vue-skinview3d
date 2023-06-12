@@ -1,15 +1,15 @@
-# pkg-name
+# vue-skinview3d
 
-[![NPM version](https://img.shields.io/npm/v/pkg-name?color=a1b858&label=)](https://www.npmjs.com/package/pkg-name)
+[![NPM version](https://img.shields.io/npm/v/vue-skinview3d?color=a1b858&label=)](https://www.npmjs.com/package/vue-skinview3d)
 
 ## 💎 Features
 
 ## 📦 Installation
 
 ```bash
-$ npm install pkg-name
-$ yarn add pkg-name
-$ pnpm add pkg-name
+$ npm install vue-skinview3d
+$ yarn add vue-skinview3d
+$ pnpm add vue-skinview3d
 ```
 
 ## 🚀 Usage
