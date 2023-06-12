@@ -1,5 +1,12 @@
 import type { PropType } from "vue";
-import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
+import {
+  defineComponent,
+  h,
+  ref,
+  shallowRef,
+  watch,
+  watchPostEffect,
+} from "vue";
 import type { CapeLoadOptions, SkinLoadOptions } from "skinview3d";
 import { SkinViewer } from "skinview3d";
 
@@ -81,7 +88,7 @@ export const SkinView3d = defineComponent({
 
     expose({ viewer });
 
-    const stop = watchPostEffect((onCleanup) => {
+    watchPostEffect((onCleanup) => {
       if (!canvasRef.value) {
         return;
       }
@@ -90,8 +97,11 @@ export const SkinView3d = defineComponent({
         canvas: canvasRef.value,
       });
 
+      viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
+      viewer.value?.loadCape(props.capeUrl, props.capeOptions);
+
       onCleanup(() => {
-        stop();
+        viewer.value?.dispose();
       });
     });
 
@@ -99,13 +109,21 @@ export const SkinView3d = defineComponent({
       viewer.value?.setSize(Number(props.width), Number(props.height));
     });
 
-    watchPostEffect(() => {
-      props.skinUrl && viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
-    });
+    watch(
+      [() => props.skinUrl, props.skinOptions],
+      () => {
+        viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
+      },
+      { immediate: true },
+    );
 
-    watchPostEffect(() => {
-      props.capeUrl && viewer.value?.loadCape(props.capeUrl, props.capeOptions);
-    });
+    watch(
+      [() => props.capeUrl, props.capeOptions],
+      () => {
+        viewer.value?.loadCape(props.capeUrl, props.capeOptions);
+      },
+      { immediate: true, flush: "post" },
+    );
 
     watchPostEffect(() => {
       viewer.value && (viewer.value.controls.enableRotate = props.enableRotate);
