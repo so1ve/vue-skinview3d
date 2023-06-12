@@ -37,6 +37,7 @@ export const SkinView3d = defineComponent({
 
       props.skinUrl && viewer.value.loadSkin(props.skinUrl);
       props.capeUrl && viewer.value.loadCape(props.capeUrl);
+
       onCleanup(() => {
         viewer.value?.dispose();
       });
