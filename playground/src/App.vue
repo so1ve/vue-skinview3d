@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import type { SkinViewer } from "skinview3d";
+import { computed, reactive, ref, watch } from "vue";
 import {
   FlyingAnimation,
   IdleAnimation,
   RunningAnimation,
   WalkingAnimation,
 } from "skinview3d";
+import type { CapeLoadOptions, SkinLoadOptions, SkinViewer } from "skinview3d";
+import type { Layers } from "vue-skinview3d";
 import { SkinView3d } from "vue-skinview3d";
 
 const availableAnimations = {
@@ -15,6 +16,15 @@ const availableAnimations = {
   run: new RunningAnimation(),
   fly: new FlyingAnimation(),
 };
+const BUILTIN_SKINS = [
+  "img/hatsune_miku.png",
+  "img/1_8_texturemap_redux.png",
+  "img/hacksore.png",
+  "img/haka.png",
+  "img/ironman_hd.png",
+  "img/sethbling.png",
+  "img/deadmau5.png",
+];
 
 const skinViewRef = ref();
 const viewer = computed<SkinViewer>(() => skinViewRef.value.viewer);
@@ -32,6 +42,36 @@ const animationClass = computed(() =>
 );
 const animationSpeed = ref(1);
 const animationPlaying = ref(true);
+const controls = reactive({
+  rotate: true,
+  zoom: true,
+  pan: false,
+});
+const layers = reactive<Layers>({
+  inner: {
+    head: true,
+    body: true,
+    leftArm: true,
+    rightArm: true,
+    leftLeg: true,
+    rightLeg: true,
+  },
+  outer: {
+    head: true,
+    body: true,
+    leftArm: true,
+    rightArm: true,
+    leftLeg: true,
+    rightLeg: true,
+  },
+});
+const skinUrl = ref("img/hatsune_miku.png");
+const capeOptions = reactive<CapeLoadOptions>({
+  backEquipment: "cape",
+});
+const skinOptions = reactive<SkinLoadOptions>({
+  model: "auto-detect",
+});
 
 function setAnimation() {
   viewer.value.animation &&
@@ -73,8 +113,14 @@ watch(animationPlaying, () => {
 <template>
   <SkinView3d
     ref="skinViewRef"
+    :cape-options="capeOptions"
+    :enable-pan="controls.pan"
+    :enable-rotate="controls.rotate"
+    :enable-zoom="controls.zoom"
     :height="height"
-    skin-url="img/hatsune_miku.png"
+    :layers="layers"
+    :skin-options="skinOptions"
+    :skin-url="skinUrl"
     :width="width"
   />
   <div class="controls">
@@ -203,6 +249,183 @@ watch(animationPlaying, () => {
       >
         Pause / Resume
       </button>
+    </div>
+    <div class="control-section">
+      <h1>Mouse Control</h1>
+      <div class="control">
+        <label>
+          <input v-model="controls.rotate" type="checkbox" />
+          Enable Rotate
+        </label>
+        <label>
+          <input v-model="controls.zoom" type="checkbox" />
+          Enable Zoom
+        </label>
+        <label>
+          <input v-model="controls.pan" type="checkbox" />
+          Enable Pan
+        </label>
+      </div>
+    </div>
+    <div class="control-section">
+      <h1>Skin Layers</h1>
+      <table id="layers_table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>head</th>
+            <th>body</th>
+            <th>right arm</th>
+            <th>left arm</th>
+            <th>right leg</th>
+            <th>left leg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>inner</th>
+            <td>
+              <input v-model="layers.inner.head" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.inner.body" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.inner.rightArm" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.inner.leftArm" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.inner.rightLeg" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.inner.leftLeg" type="checkbox" />
+            </td>
+          </tr>
+          <tr>
+            <th>outer</th>
+            <td>
+              <input v-model="layers.outer.head" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.outer.body" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.outer.rightArm" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.outer.leftArm" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.outer.rightLeg" type="checkbox" />
+            </td>
+            <td>
+              <input v-model="layers.outer.leftLeg" type="checkbox" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <h2>Back Equipment</h2>
+        <div class="control">
+          <label>
+            <input
+              v-model="capeOptions.backEquipment"
+              type="radio"
+              value="cape"
+            />
+            Cape
+          </label>
+          <label>
+            <input
+              v-model="capeOptions.backEquipment"
+              type="radio"
+              value="elytra"
+            />
+            Elytra
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="control-section">
+      <h1>Skin</h1>
+      <div>
+        <div class="control">
+          <label>
+            URL:
+            <select v-model="skinUrl">
+              <option v-for="url in BUILTIN_SKINS" :key="url" :value="url">
+                {{ url }}
+              </option>
+            </select>
+          </label>
+          <input
+            id="skin_url_upload"
+            accept="image/*"
+            class="hidden"
+            type="file"
+          />
+          <button id="skin_url_unset" class="control hidden" type="button">
+            Unset
+          </button>
+          <button
+            class="control"
+            onclick="document.getElementById('skin_url_upload').click();"
+            type="button"
+          >
+            Browse...
+          </button>
+        </div>
+      </div>
+      <div>
+        <label class="control">
+          Model:
+          <select v-model="skinOptions.model">
+            <option selected value="auto-detect">Auto detect</option>
+            <option value="default">Default</option>
+            <option value="slim">Slim</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="control-section">
+      <h1>Cape</h1>
+      <div class="control">
+        <label>
+          URL:
+          <input
+            id="cape_url"
+            list="default_capes"
+            placeholder="none"
+            size="20"
+            type="text"
+            value="img/mojang_cape.png"
+          />
+        </label>
+        <datalist id="default_capes">
+          <option value=""></option>
+          <option value="img/mojang_cape.png"></option>
+          <option value="img/legacy_cape.png"></option>
+          <option value="img/hd_cape.png"></option>
+        </datalist>
+        <input
+          id="cape_url_upload"
+          accept="image/*"
+          class="hidden"
+          type="file"
+        />
+        <button id="cape_url_unset" class="control hidden" type="button">
+          Unset
+        </button>
+        <button
+          class="control"
+          onclick="document.getElementById('cape_url_upload').click();"
+          type="button"
+        >
+          Browse...
+        </button>
+      </div>
     </div>
   </div>
 </template>
