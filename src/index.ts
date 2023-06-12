@@ -1,5 +1,6 @@
 import type { PropType } from "vue";
 import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
+import type { CapeLoadOptions, SkinLoadOptions } from "skinview3d";
 import { SkinViewer } from "skinview3d";
 
 import type { Layers } from "./types";
@@ -29,9 +30,15 @@ export const SkinView3d = defineComponent({
       type: String,
       default: null,
     },
+    skinOptions: {
+      type: Object as PropType<SkinLoadOptions>,
+    },
     capeUrl: {
       type: String,
       default: null,
+    },
+    capeOptions: {
+      type: Object as PropType<CapeLoadOptions>,
     },
     enableRotate: {
       type: Boolean,
@@ -47,24 +54,25 @@ export const SkinView3d = defineComponent({
     },
     layers: {
       type: Object as PropType<Layers>,
-      default: () => ({
-        inner: {
-          head: true,
-          body: true,
-          rightArm: true,
-          leftArm: true,
-          rightLeg: true,
-          leftLeg: true,
-        },
-        outer: {
-          head: true,
-          body: true,
-          rightArm: true,
-          leftArm: true,
-          rightLeg: true,
-          leftLeg: true,
-        },
-      }),
+      default: () =>
+        ({
+          inner: {
+            head: true,
+            body: true,
+            rightArm: true,
+            leftArm: true,
+            rightLeg: true,
+            leftLeg: true,
+          },
+          outer: {
+            head: true,
+            body: true,
+            rightArm: true,
+            leftArm: true,
+            rightLeg: true,
+            leftLeg: true,
+          },
+        } as Layers),
     },
   },
   setup: (props, { expose }) => {
@@ -92,11 +100,11 @@ export const SkinView3d = defineComponent({
     });
 
     watchPostEffect(() => {
-      props.skinUrl && viewer.value?.loadSkin(props.skinUrl);
+      props.skinUrl && viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
     });
 
     watchPostEffect(() => {
-      props.capeUrl && viewer.value?.loadCape(props.capeUrl);
+      props.capeUrl && viewer.value?.loadCape(props.capeUrl, props.capeOptions);
     });
 
     watchPostEffect(() => {
