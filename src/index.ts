@@ -18,6 +18,18 @@ export const SkinView3d = defineComponent({
       type: String,
       default: null,
     },
+    enableRotate: {
+      type: Boolean,
+      default: true,
+    },
+    enableZoom: {
+      type: Boolean,
+      default: true,
+    },
+    enablePan: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup: (props, { expose }) => {
     const viewer = shallowRef<SkinViewer>();
@@ -49,6 +61,18 @@ export const SkinView3d = defineComponent({
 
     watchPostEffect(() => {
       props.capeUrl && viewer.value?.loadCape(props.capeUrl);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.controls.enableRotate = props.enableRotate);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.controls.enableZoom = props.enableZoom);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.controls.enablePan = props.enablePan);
     });
 
     return () => h("canvas", { ref: canvasRef });
