@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {
-  FlyingAnimation,
-  IdleAnimation,
-  RunningAnimation,
-  WalkingAnimation,
-} from "skinview3d";
 import type {
   CapeLoadOptions,
   PlayerAnimation,
   SkinLoadOptions,
 } from "skinview3d";
 import { computed, reactive, ref } from "vue";
-import { SkinView3d } from "vue-skinview3d";
+import {
+  FlyingAnimation,
+  IdleAnimation,
+  RunningAnimation,
+  SkinView3d,
+  WalkingAnimation,
+} from "vue-skinview3d";
 import type { Background, Layers } from "vue-skinview3d";
 
 const availableAnimations = {
