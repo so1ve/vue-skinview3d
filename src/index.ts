@@ -7,7 +7,11 @@ import {
   watch,
   watchPostEffect,
 } from "vue";
-import type { CapeLoadOptions, SkinLoadOptions } from "skinview3d";
+import type {
+  CapeLoadOptions,
+  PlayerAnimation,
+  SkinLoadOptions,
+} from "skinview3d";
 import { SkinViewer } from "skinview3d";
 
 import type { Layers } from "./types";
@@ -32,6 +36,25 @@ export const SkinView3d = defineComponent({
     },
     height: {
       type: Number,
+    },
+    fov: {
+      type: Number,
+      default: 70,
+      validator(value: number) {
+        return value > 0 && value < 180;
+      },
+    },
+    zoom: {
+      type: Number,
+      default: 0.9,
+    },
+    globalLight: {
+      type: Number,
+      default: 0.4,
+    },
+    cameraLight: {
+      type: Number,
+      default: 0.6,
     },
     skinUrl: {
       type: String,
@@ -81,6 +104,18 @@ export const SkinView3d = defineComponent({
           },
         } as Layers),
     },
+    autoRotate: {
+      type: Boolean,
+      default: false,
+    },
+    autoRotateSpeed: {
+      type: Number,
+      default: 2,
+    },
+    animation: {
+      type: Object as PropType<PlayerAnimation | null>,
+      default: null,
+    },
   },
   setup: (props, { expose }) => {
     const viewer = shallowRef<SkinViewer>();
@@ -107,6 +142,22 @@ export const SkinView3d = defineComponent({
 
     watchPostEffect(() => {
       viewer.value?.setSize(Number(props.width), Number(props.height));
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.fov = props.fov);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.zoom = props.zoom);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.globalLight.intensity = props.globalLight);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.cameraLight.intensity = props.cameraLight);
     });
 
     watch(
@@ -147,6 +198,18 @@ export const SkinView3d = defineComponent({
             props.layers[layer][part];
         }
       }
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.autoRotate = props.autoRotate);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.autoRotateSpeed = props.autoRotateSpeed);
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.animation = props.animation);
     });
 
     return () => h("canvas", { ref: canvasRef });
