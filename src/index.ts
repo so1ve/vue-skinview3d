@@ -1,20 +1,9 @@
 import type { PropType } from "vue";
-import {
-  defineComponent,
-  h,
-  ref,
-  shallowRef,
-  watch,
-  watchPostEffect,
-} from "vue";
-import type {
-  CapeLoadOptions,
-  PlayerAnimation,
-  SkinLoadOptions,
-} from "skinview3d";
+import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
+import type { PlayerAnimation } from "skinview3d";
 import { SkinViewer } from "skinview3d";
 
-import type { Layers } from "./types";
+import type { CapeOptions, Layers, SkinOptions } from "./types";
 
 export * from "./types";
 
@@ -61,14 +50,14 @@ export const SkinView3d = defineComponent({
       default: null,
     },
     skinOptions: {
-      type: Object as PropType<SkinLoadOptions>,
+      type: Object as PropType<SkinOptions>,
     },
     capeUrl: {
       type: String,
       default: null,
     },
     capeOptions: {
-      type: Object as PropType<CapeLoadOptions>,
+      type: Object as PropType<CapeOptions>,
     },
     enableRotate: {
       type: Boolean,
@@ -132,9 +121,6 @@ export const SkinView3d = defineComponent({
         canvas: canvasRef.value,
       });
 
-      viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
-      viewer.value?.loadCape(props.capeUrl, props.capeOptions);
-
       onCleanup(() => {
         viewer.value?.dispose();
       });
@@ -160,21 +146,21 @@ export const SkinView3d = defineComponent({
       viewer.value && (viewer.value.cameraLight.intensity = props.cameraLight);
     });
 
-    watch(
-      [() => props.skinUrl, props.skinOptions],
-      () => {
-        viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
-      },
-      { immediate: true },
-    );
+    watchPostEffect(() => {
+      // Force trigger watcher
+      // eslint-disable-next-line no-unused-expressions
+      props.skinOptions?.ears;
+      // eslint-disable-next-line no-unused-expressions
+      props.skinOptions?.model;
+      viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
+    });
 
-    watch(
-      [() => props.capeUrl, props.capeOptions],
-      () => {
-        viewer.value?.loadCape(props.capeUrl, props.capeOptions);
-      },
-      { immediate: true, flush: "post" },
-    );
+    watchPostEffect(() => {
+      // Force trigger watcher
+      // eslint-disable-next-line no-unused-expressions
+      props.capeOptions?.backEquipment;
+      viewer.value?.loadCape(props.capeUrl, props.capeOptions);
+    });
 
     watchPostEffect(() => {
       viewer.value && (viewer.value.controls.enableRotate = props.enableRotate);
