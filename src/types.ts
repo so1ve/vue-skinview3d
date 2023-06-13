@@ -14,3 +14,12 @@ export interface Layers {
 }
 export type SkinOptions = Omit<SkinLoadOptions, "makeVisible">;
 export type CapeOptions = Omit<CapeLoadOptions, "makeVisible">;
+export type Background =
+  | {
+      type: "panorama" | "image";
+      value: string;
+    }
+  | {
+      type: "color";
+      value: number;
+    };

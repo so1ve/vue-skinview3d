@@ -1,9 +1,9 @@
-import type { PropType } from "vue";
-import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
 import type { PlayerAnimation } from "skinview3d";
 import { SkinViewer } from "skinview3d";
+import type { PropType } from "vue";
+import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
 
-import type { CapeOptions, Layers, SkinOptions } from "./types";
+import type { Background, CapeOptions, Layers, SkinOptions } from "./types";
 
 export * from "./types";
 
@@ -105,6 +105,13 @@ export const SkinView3d = defineComponent({
       type: Object as PropType<PlayerAnimation | null>,
       default: null,
     },
+    background: {
+      type: Object as PropType<Background>,
+    },
+    nameTag: {
+      type: String,
+      default: null,
+    },
   },
   setup: (props, { expose }) => {
     const viewer = shallowRef<SkinViewer>();
@@ -199,6 +206,25 @@ export const SkinView3d = defineComponent({
 
     watchPostEffect(() => {
       viewer.value && (viewer.value.animation = props.animation);
+    });
+
+    watchPostEffect(() => {
+      if (!viewer.value) {
+        return;
+      }
+      if (!props.background) {
+        viewer.value.background = null;
+      } else if (props.background.type === "color") {
+        viewer.value.background = props.background.value;
+      } else if (props.background.type === "image") {
+        viewer.value.loadBackground(props.background.value);
+      } else if (props.background.type === "panorama") {
+        viewer.value.loadPanorama(props.background.value);
+      }
+    });
+
+    watchPostEffect(() => {
+      viewer.value && (viewer.value.nameTag = props.nameTag);
     });
 
     return () => h("canvas", { ref: canvasRef });
