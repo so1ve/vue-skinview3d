@@ -88,7 +88,7 @@ const capeUrl = ref("img/mojang_cape.png");
 const capeOptions = reactive<CapeLoadOptions>({
   backEquipment: "cape",
 });
-const panorama = ref(false);
+const panorama = ref(true);
 const panoramaUrl = computed(() =>
   panorama.value ? "img/panorama.png" : null,
 );
@@ -100,7 +100,7 @@ const background = computed<Background | undefined>(() =>
       }
     : undefined,
 );
-const nameTag = ref("");
+const nameTag = ref("Hatsune Miku");
 </script>
 
 <template>
