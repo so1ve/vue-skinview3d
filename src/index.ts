@@ -152,6 +152,9 @@ export const SkinView3d = defineComponent({
       props.skinOptions?.ears;
       // eslint-disable-next-line no-unused-expressions
       props.skinOptions?.model;
+      if (!props.skinOptions?.ears) {
+        viewer.value?.loadEars(null);
+      }
       viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
     });
 
