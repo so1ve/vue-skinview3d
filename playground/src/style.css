@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Minecraft";
+  src: url("font/minecraft.woff2") format("woff2");
+}
+
 body {
   font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
   margin: 5px;
@@ -24,7 +29,7 @@ input[type="text"] {
   display: inline;
 }
 
-.control+.control {
+.control + .control {
   margin-left: 10px;
 }
 
@@ -32,8 +37,8 @@ input[type="text"] {
   margin-left: 10px;
 }
 
-.control-section>h1,
-.control-section>h2 {
+.control-section > h1,
+.control-section > h2 {
   margin-left: -10px;
 }
 

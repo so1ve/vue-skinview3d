@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from "vue";
 import {
   FlyingAnimation,
   IdleAnimation,
   RunningAnimation,
   WalkingAnimation,
 } from "skinview3d";
-import type { CapeLoadOptions, SkinLoadOptions, SkinViewer } from "skinview3d";
-import type { Layers } from "vue-skinview3d";
+import type {
+  CapeLoadOptions,
+  PlayerAnimation,
+  SkinLoadOptions,
+} from "skinview3d";
+import { computed, reactive, ref } from "vue";
 import { SkinView3d } from "vue-skinview3d";
+import type { Background, Layers } from "vue-skinview3d";
 
 const availableAnimations = {
   idle: new IdleAnimation(),
@@ -25,9 +29,12 @@ const BUILTIN_SKINS = [
   "img/sethbling.png",
   "img/deadmau5.png",
 ];
+const BUILTIN_CAPES = [
+  "img/mojang_cape.png",
+  "img/legacy_cape.png",
+  "img/hd_cape.png",
+];
 
-const skinViewRef = ref();
-const viewer = computed<SkinViewer>(() => skinViewRef.value.viewer);
 const width = ref(300);
 const height = ref(300);
 const fov = ref(70);
@@ -36,12 +43,19 @@ const globalLight = ref(0.4);
 const cameraLight = ref(0.6);
 const autoRotate = ref(false);
 const autoRotateSpeed = ref(2);
-const animation = ref("" as "" | keyof typeof availableAnimations);
-const animationClass = computed(() =>
-  animation.value === "" ? null : availableAnimations[animation.value],
-);
+const animationType = ref("" as "" | keyof typeof availableAnimations);
 const animationSpeed = ref(1);
 const animationPlaying = ref(true);
+const animation = computed<PlayerAnimation | null>(() => {
+  const animationClass =
+    animationType.value === ""
+      ? null
+      : availableAnimations[animationType.value];
+  animationClass && (animationClass.speed = animationSpeed.value);
+  animationClass && (animationClass.paused = !animationPlaying.value);
+
+  return animationClass;
+});
 const controls = reactive({
   rotate: true,
   zoom: true,
@@ -66,62 +80,50 @@ const layers = reactive<Layers>({
   },
 });
 const skinUrl = ref("img/hatsune_miku.png");
+const skinOptions = reactive<SkinLoadOptions>({
+  model: "auto-detect",
+  ears: false,
+});
+const capeUrl = ref("img/mojang_cape.png");
 const capeOptions = reactive<CapeLoadOptions>({
   backEquipment: "cape",
 });
-const skinOptions = reactive<SkinLoadOptions>({
-  model: "auto-detect",
-});
-
-function setAnimation() {
-  viewer.value.animation &&
-    (viewer.value.animation.speed = animationSpeed.value);
-  viewer.value.animation &&
-    (viewer.value.animation.paused = !animationPlaying.value);
-}
-
-watch(fov, () => {
-  viewer.value.fov = fov.value;
-});
-watch(zoom, () => {
-  viewer.value.zoom = zoom.value;
-});
-watch(globalLight, () => {
-  viewer.value.globalLight.intensity = globalLight.value;
-});
-watch(cameraLight, () => {
-  viewer.value.cameraLight.intensity = cameraLight.value;
-});
-watch(autoRotate, () => {
-  viewer.value.autoRotate = autoRotate.value;
-});
-watch(autoRotateSpeed, () => {
-  viewer.value.autoRotateSpeed = autoRotateSpeed.value;
-});
-watch(animationClass, () => {
-  viewer.value.animation = animationClass.value;
-  setAnimation();
-});
-watch(animationSpeed, () => {
-  setAnimation();
-});
-watch(animationPlaying, () => {
-  setAnimation();
-});
+const panorama = ref(false);
+const panoramaUrl = computed(() =>
+  panorama.value ? "img/panorama.png" : null,
+);
+const background = computed<Background | undefined>(() =>
+  panoramaUrl.value
+    ? {
+        type: "panorama",
+        value: panoramaUrl.value,
+      }
+    : undefined,
+);
+const nameTag = ref("");
 </script>
 
 <template>
   <SkinView3d
-    ref="skinViewRef"
+    :animation="animation"
+    :auto-rotate="autoRotate"
+    :auto-rotate-speed="autoRotateSpeed"
+    :background="background"
+    :camera-light="cameraLight"
     :cape-options="capeOptions"
+    :cape-url="capeUrl"
     :enable-pan="controls.pan"
     :enable-rotate="controls.rotate"
     :enable-zoom="controls.zoom"
+    :fov="fov"
+    :global-light="globalLight"
     :height="height"
     :layers="layers"
+    :name-tag="nameTag"
     :skin-options="skinOptions"
     :skin-url="skinUrl"
     :width="width"
+    :zoom="zoom"
   />
   <div class="controls">
     <div class="control-section">
@@ -203,16 +205,16 @@ watch(animationPlaying, () => {
       <h1>Animation</h1>
       <div>
         <label>
-          <input v-model="animation" checked type="radio" value="" />
+          <input v-model="animationType" checked type="radio" value="" />
           None
         </label>
         <label>
-          <input v-model="animation" type="radio" value="idle" />
+          <input v-model="animationType" type="radio" value="idle" />
           Idle
         </label>
         <label>
           <input
-            v-model="animation"
+            v-model="animationType"
             name="animation"
             type="radio"
             value="walk"
@@ -221,7 +223,7 @@ watch(animationPlaying, () => {
         </label>
         <label>
           <input
-            v-model="animation"
+            v-model="animationType"
             name="animation"
             type="radio"
             value="run"
@@ -230,7 +232,7 @@ watch(animationPlaying, () => {
         </label>
         <label>
           <input
-            v-model="animation"
+            v-model="animationType"
             name="animation"
             type="radio"
             value="fly"
@@ -269,7 +271,7 @@ watch(animationPlaying, () => {
     </div>
     <div class="control-section">
       <h1>Skin Layers</h1>
-      <table id="layers_table">
+      <table>
         <thead>
           <tr>
             <th></th>
@@ -360,22 +362,6 @@ watch(animationPlaying, () => {
               </option>
             </select>
           </label>
-          <input
-            id="skin_url_upload"
-            accept="image/*"
-            class="hidden"
-            type="file"
-          />
-          <button id="skin_url_unset" class="control hidden" type="button">
-            Unset
-          </button>
-          <button
-            class="control"
-            onclick="document.getElementById('skin_url_upload').click();"
-            type="button"
-          >
-            Browse...
-          </button>
         </div>
       </div>
       <div>
@@ -394,38 +380,46 @@ watch(animationPlaying, () => {
       <div class="control">
         <label>
           URL:
-          <input
-            id="cape_url"
-            list="default_capes"
-            placeholder="none"
-            size="20"
-            type="text"
-            value="img/mojang_cape.png"
-          />
+          <select v-model="capeUrl">
+            <option v-for="url in BUILTIN_CAPES" :key="url" :value="url">
+              {{ url }}
+            </option>
+          </select>
         </label>
-        <datalist id="default_capes">
-          <option value=""></option>
-          <option value="img/mojang_cape.png"></option>
-          <option value="img/legacy_cape.png"></option>
-          <option value="img/hd_cape.png"></option>
-        </datalist>
-        <input
-          id="cape_url_upload"
-          accept="image/*"
-          class="hidden"
-          type="file"
-        />
-        <button id="cape_url_unset" class="control hidden" type="button">
-          Unset
-        </button>
-        <button
-          class="control"
-          onclick="document.getElementById('cape_url_upload').click();"
-          type="button"
-        >
-          Browse...
-        </button>
+      </div>
+    </div>
+    <div class="control-section">
+      <h1>Ears</h1>
+      <div>
+        <label class="control">
+          <input v-model="skinOptions.ears" type="checkbox" />
+          Enable
+        </label>
+      </div>
+    </div>
+    <div class="control-section">
+      <h1>Panorama</h1>
+      <div class="control">
+        <label class="control">
+          <input v-model="panorama" type="checkbox" />
+          Enable
+        </label>
+      </div>
+    </div>
+    <div class="control-section">
+      <h1>Name Tag</h1>
+      <div class="control">
+        <label>
+          Text:
+          <input v-model="nameTag" placeholder="none" size="20" type="text" />
+        </label>
       </div>
     </div>
   </div>
+  <footer>
+    <div>
+      GitHub:
+      <a href="https://github.com/so1ve/vue-skinview3d">so1ve/vue-skinview3d</a>
+    </div>
+  </footer>
 </template>
