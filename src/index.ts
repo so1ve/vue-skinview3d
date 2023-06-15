@@ -117,7 +117,7 @@ export const SkinView3d = defineComponent({
       type: Object as PropType<Background>,
     },
     nameTag: {
-      type: String,
+      type: String as PropType<string | null>,
       default: null,
     },
   },
