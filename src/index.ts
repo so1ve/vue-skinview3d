@@ -145,13 +145,18 @@ export const SkinView3d = defineComponent({
       viewer.value?.setSize(Number(props.width), Number(props.height));
     });
 
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.fov = props.fov);
-    });
-
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.zoom = props.zoom);
-    });
+    for (const prop of [
+      "fov",
+      "zoom",
+      "autoRotate",
+      "autoRotateSpeed",
+      "animation",
+      "nameTag",
+    ] as const) {
+      watchPostEffect(() => {
+        viewer.value && ((viewer.value[prop] as any) = props[prop]);
+      });
+    }
 
     watchPostEffect(() => {
       viewer.value && (viewer.value.globalLight.intensity = props.globalLight);
@@ -180,17 +185,11 @@ export const SkinView3d = defineComponent({
       viewer.value?.loadCape(props.capeUrl, props.capeOptions);
     });
 
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.controls.enableRotate = props.enableRotate);
-    });
-
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.controls.enableZoom = props.enableZoom);
-    });
-
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.controls.enablePan = props.enablePan);
-    });
+    for (const prop of ["enableRotate", "enableZoom", "enablePan"] as const) {
+      watchPostEffect(() => {
+        viewer.value && (viewer.value.controls[prop] = props[prop]);
+      });
+    }
 
     watchPostEffect(() => {
       if (!viewer.value) {
@@ -202,18 +201,6 @@ export const SkinView3d = defineComponent({
             props.layers[layer][part];
         }
       }
-    });
-
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.autoRotate = props.autoRotate);
-    });
-
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.autoRotateSpeed = props.autoRotateSpeed);
-    });
-
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.animation = props.animation);
     });
 
     watchPostEffect(() => {
@@ -229,10 +216,6 @@ export const SkinView3d = defineComponent({
       } else if (props.background.type === "panorama") {
         viewer.value.loadPanorama(props.background.value);
       }
-    });
-
-    watchPostEffect(() => {
-      viewer.value && (viewer.value.nameTag = props.nameTag);
     });
 
     return () => h("canvas", { ref: canvasRef });
