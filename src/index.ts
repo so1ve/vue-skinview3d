@@ -1,19 +1,18 @@
-import { SkinViewer } from "skinview3d";
 import type { PlayerAnimation } from "skinview3d";
+import { SkinViewer } from "skinview3d";
 import type { PropType } from "vue";
 import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
 
 import type { Background, CapeOptions, Layers, SkinOptions } from "./types";
 
+export * from "./types";
 export {
-  IdleAnimation,
   FlyingAnimation,
+  FunctionAnimation,
+  IdleAnimation,
   RunningAnimation,
   WalkingAnimation,
-  FunctionAnimation,
 } from "skinview3d";
-
-export * from "./types";
 
 const LAYER_PARTS = [
   "head",
