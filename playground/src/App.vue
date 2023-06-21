@@ -5,6 +5,7 @@ import type {
   SkinLoadOptions,
 } from "skinview3d";
 import { computed, reactive, ref } from "vue";
+import type { Background, Layers } from "vue-skinview3d";
 import {
   FlyingAnimation,
   IdleAnimation,
@@ -12,7 +13,6 @@ import {
   SkinView3d,
   WalkingAnimation,
 } from "vue-skinview3d";
-import type { Background, Layers } from "vue-skinview3d";
 
 const availableAnimations = {
   idle: new IdleAnimation(),
