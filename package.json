@@ -1,7 +1,7 @@
 {
   "name": "vue-skinview3d",
   "version": "0.2.3",
-  "packageManager": "pnpm@8.6.3",
+  "packageManager": "pnpm@8.6.4",
   "author": "Ray <i@mk1.io> (@so1ve)",
   "description": "Three.js powered Minecraft skin viewer. (Vue binding of skinview3d)",
   "keywords": [
