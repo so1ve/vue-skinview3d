@@ -55,7 +55,8 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "skinview3d": "3.0.0-alpha.1"
+    "skinview3d": "3.0.0-alpha.1",
+    "vue-skinview3d": "workspace:^"
   },
   "devDependencies": {
     "@antfu/ni": "^0.21.4",

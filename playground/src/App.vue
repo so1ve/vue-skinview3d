@@ -4,7 +4,15 @@ import type {
   PlayerAnimation,
   SkinLoadOptions,
 } from "skinview3d";
-import { computed, reactive, ref } from "vue";
+import type { Ref } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+} from "vue";
 import type { Background, Layers } from "vue-skinview3d";
 import {
   FlyingAnimation,
@@ -101,325 +109,413 @@ const background = computed<Background | undefined>(() =>
     : undefined,
 );
 const nameTag = ref("Hatsune Miku");
+const usingNewUI = ref(
+  localStorage.getItem("usingNewUI") === "1" ? true : false || false,
+);
+const skinRef: Ref<HTMLElement | undefined> = ref();
+const listener: any = window.addEventListener("resize", () => {
+  if (usingNewUI.value) {
+    height.value = skinRef.value!.offsetHeight;
+    width.value = skinRef.value!.offsetWidth;
+  }
+});
+function changeUI() {
+  if (usingNewUI.value) {
+    document.querySelector("html")?.classList.add("new_ui");
+    document.querySelector("body")?.classList.add("new_ui");
+    document.querySelector("#app")?.classList.add("new_ui");
+    nextTick(() => {
+      height.value = skinRef.value!.offsetHeight;
+      width.value = skinRef.value!.offsetWidth;
+    });
+  } else {
+    document.querySelector("html")?.classList.remove("new_ui");
+    document.querySelector("body")?.classList.remove("new_ui");
+    document.querySelector("#app")?.classList.remove("new_ui");
+    nextTick(() => {
+      height.value = 300;
+      width.value = 300;
+    });
+  }
+}
+onMounted(() => {
+  changeUI();
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", listener);
+});
+function useNewUIEvent() {
+  usingNewUI.value = !usingNewUI.value;
+  localStorage.setItem("usingNewUI", usingNewUI.value ? "1" : "0");
+  changeUI();
+}
 </script>
 
 <template>
-  <SkinView3d
-    :animation="animation"
-    :auto-rotate="autoRotate"
-    :auto-rotate-speed="autoRotateSpeed"
-    :background="background"
-    :camera-light="cameraLight"
-    :cape-options="capeOptions"
-    :cape-url="capeUrl"
-    :enable-pan="controls.pan"
-    :enable-rotate="controls.rotate"
-    :enable-zoom="controls.zoom"
-    :fov="fov"
-    :global-light="globalLight"
-    :height="height"
-    :layers="layers"
-    :name-tag="nameTag || null"
-    :skin-options="skinOptions"
-    :skin-url="skinUrl"
-    :width="width"
-    :zoom="zoom"
-  />
-  <div class="controls">
-    <div class="control-section">
-      <h1>Viewport</h1>
-      <div>
-        <label class="control">
-          Width:
-          <input v-model="width" size="4" type="number" />
-        </label>
-        <label class="control">
-          Height:
-          <input v-model="height" size="4" type="number" />
-        </label>
-      </div>
-      <div>
-        <label class="control">
-          FOV:
-          <input
-            v-model="fov"
-            max="179"
-            min="1"
-            size="2"
-            step="1"
-            type="number"
-          />
-        </label>
-        <label class="control">
-          Zoom:
-          <input
-            v-model="zoom"
-            max="2.00"
-            min="0.01"
-            size="4"
-            step="0.01"
-            type="number"
-          />
-        </label>
-      </div>
-    </div>
-    <div class="control-section">
-      <h1>Light</h1>
-      <div>
-        <label class="control">
-          Global:
-          <input
-            v-model="globalLight"
-            max="2.00"
-            min="0.00"
-            size="4"
-            step="0.01"
-            type="number"
-          />
-        </label>
-        <label class="control">
-          Camera:
-          <input
-            v-model="cameraLight"
-            max="2.00"
-            min="0.00"
-            size="4"
-            step="0.01"
-            type="number"
-          />
-        </label>
-      </div>
-    </div>
-    <div class="control-section">
-      <h1>Rotation</h1>
-      <label class="control">
-        <input v-model="autoRotate" type="checkbox" />
-        Enable
-      </label>
-      <label class="control">
-        Speed:
-        <input v-model="autoRotateSpeed" size="3" step="0.1" type="number" />
-      </label>
-    </div>
-    <div class="control-section">
-      <h1>Animation</h1>
-      <div>
-        <label>
-          <input v-model="animationType" checked type="radio" value="" />
-          None
-        </label>
-        <label>
-          <input v-model="animationType" type="radio" value="idle" />
-          Idle
-        </label>
-        <label>
-          <input
-            v-model="animationType"
-            name="animation"
-            type="radio"
-            value="walk"
-          />
-          Walk
-        </label>
-        <label>
-          <input
-            v-model="animationType"
-            name="animation"
-            type="radio"
-            value="run"
-          />
-          Run
-        </label>
-        <label>
-          <input
-            v-model="animationType"
-            name="animation"
-            type="radio"
-            value="fly"
-          />
-          Fly
-        </label>
-      </div>
-      <label class="control">
-        Speed:
-        <input v-model="animationSpeed" size="3" step="0.1" type="number" />
-      </label>
-      <button
-        class="control"
-        type="button"
-        @click="animationPlaying = !animationPlaying"
-      >
-        Pause / Resume
-      </button>
-    </div>
-    <div class="control-section">
-      <h1>Mouse Control</h1>
-      <div class="control">
-        <label>
-          <input v-model="controls.rotate" type="checkbox" />
-          Enable Rotate
-        </label>
-        <label>
-          <input v-model="controls.zoom" type="checkbox" />
-          Enable Zoom
-        </label>
-        <label>
-          <input v-model="controls.pan" type="checkbox" />
-          Enable Pan
-        </label>
-      </div>
-    </div>
-    <div class="control-section">
-      <h1>Skin Layers</h1>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>head</th>
-            <th>body</th>
-            <th>right arm</th>
-            <th>left arm</th>
-            <th>right leg</th>
-            <th>left leg</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>inner</th>
-            <td>
-              <input v-model="layers.inner.head" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.inner.body" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.inner.rightArm" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.inner.leftArm" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.inner.rightLeg" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.inner.leftLeg" type="checkbox" />
-            </td>
-          </tr>
-          <tr>
-            <th>outer</th>
-            <td>
-              <input v-model="layers.outer.head" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.outer.body" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.outer.rightArm" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.outer.leftArm" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.outer.rightLeg" type="checkbox" />
-            </td>
-            <td>
-              <input v-model="layers.outer.leftLeg" type="checkbox" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
-        <h2>Back Equipment</h2>
-        <div class="control">
-          <label>
-            <input
-              v-model="capeOptions.backEquipment"
-              type="radio"
-              value="cape"
-            />
-            Cape
+  <div class="container" :class="{ newUi: usingNewUI }">
+    <section ref="skinRef" class="skin_view_3d" :class="{ newUi: usingNewUI }">
+      <SkinView3d
+        :animation="animation"
+        :auto-rotate="autoRotate"
+        :auto-rotate-speed="autoRotateSpeed"
+        :background="background"
+        :camera-light="cameraLight"
+        :cape-options="capeOptions"
+        :cape-url="capeUrl"
+        :enable-pan="controls.pan"
+        :enable-rotate="controls.rotate"
+        :enable-zoom="controls.zoom"
+        :fov="fov"
+        :global-light="globalLight"
+        :height="height"
+        :layers="layers"
+        :name-tag="nameTag || null"
+        :skin-options="skinOptions"
+        :skin-url="skinUrl"
+        :width="width"
+        :zoom="zoom"
+      />
+    </section>
+    <section class="controls" :class="{ newUi: usingNewUI }">
+      <div class="control-section">
+        <h1>Viewport</h1>
+        <div>
+          <label class="control">
+            Width:
+            <input v-model="width" size="4" type="number" />
           </label>
-          <label>
+          <label class="control">
+            Height:
+            <input v-model="height" size="4" type="number" />
+          </label>
+        </div>
+        <div>
+          <label class="control">
+            FOV:
             <input
-              v-model="capeOptions.backEquipment"
-              type="radio"
-              value="elytra"
+              v-model="fov"
+              max="179"
+              min="1"
+              size="2"
+              step="1"
+              type="number"
             />
-            Elytra
+          </label>
+          <label class="control">
+            Zoom:
+            <input
+              v-model="zoom"
+              max="2.00"
+              min="0.01"
+              size="4"
+              step="0.01"
+              type="number"
+            />
           </label>
         </div>
       </div>
-    </div>
-    <div class="control-section">
-      <h1>Skin</h1>
-      <div>
+      <div class="control-section">
+        <h1>Light</h1>
+        <div>
+          <label class="control">
+            Global:
+            <input
+              v-model="globalLight"
+              max="2.00"
+              min="0.00"
+              size="4"
+              step="0.01"
+              type="number"
+            />
+          </label>
+          <label class="control">
+            Camera:
+            <input
+              v-model="cameraLight"
+              max="2.00"
+              min="0.00"
+              size="4"
+              step="0.01"
+              type="number"
+            />
+          </label>
+        </div>
+      </div>
+      <div class="control-section">
+        <h1>Rotation</h1>
+        <label class="control">
+          <input v-model="autoRotate" type="checkbox" />
+          Enable
+        </label>
+        <label class="control">
+          Speed:
+          <input v-model="autoRotateSpeed" size="3" step="0.1" type="number" />
+        </label>
+      </div>
+      <div class="control-section">
+        <h1>Animation</h1>
+        <div>
+          <label>
+            <input v-model="animationType" checked type="radio" value="" />
+            None
+          </label>
+          <label>
+            <input v-model="animationType" type="radio" value="idle" />
+            Idle
+          </label>
+          <label>
+            <input
+              v-model="animationType"
+              name="animation"
+              type="radio"
+              value="walk"
+            />
+            Walk
+          </label>
+          <label>
+            <input
+              v-model="animationType"
+              name="animation"
+              type="radio"
+              value="run"
+            />
+            Run
+          </label>
+          <label>
+            <input
+              v-model="animationType"
+              name="animation"
+              type="radio"
+              value="fly"
+            />
+            Fly
+          </label>
+        </div>
+        <label class="control">
+          Speed:
+          <input v-model="animationSpeed" size="3" step="0.1" type="number" />
+        </label>
+        <button
+          class="control"
+          type="button"
+          @click="animationPlaying = !animationPlaying"
+        >
+          Pause / Resume
+        </button>
+      </div>
+      <div class="control-section">
+        <h1>Mouse Control</h1>
+        <div class="control">
+          <label>
+            <input v-model="controls.rotate" type="checkbox" />
+            Enable Rotate
+          </label>
+          <label>
+            <input v-model="controls.zoom" type="checkbox" />
+            Enable Zoom
+          </label>
+          <label>
+            <input v-model="controls.pan" type="checkbox" />
+            Enable Pan
+          </label>
+        </div>
+      </div>
+      <div class="control-section">
+        <h1>Skin Layers</h1>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>head</th>
+              <th>body</th>
+              <th>right arm</th>
+              <th>left arm</th>
+              <th>right leg</th>
+              <th>left leg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>inner</th>
+              <td>
+                <input v-model="layers.inner.head" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.inner.body" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.inner.rightArm" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.inner.leftArm" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.inner.rightLeg" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.inner.leftLeg" type="checkbox" />
+              </td>
+            </tr>
+            <tr>
+              <th>outer</th>
+              <td>
+                <input v-model="layers.outer.head" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.outer.body" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.outer.rightArm" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.outer.leftArm" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.outer.rightLeg" type="checkbox" />
+              </td>
+              <td>
+                <input v-model="layers.outer.leftLeg" type="checkbox" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          <h2>Back Equipment</h2>
+          <div class="control">
+            <label>
+              <input
+                v-model="capeOptions.backEquipment"
+                type="radio"
+                value="cape"
+              />
+              Cape
+            </label>
+            <label>
+              <input
+                v-model="capeOptions.backEquipment"
+                type="radio"
+                value="elytra"
+              />
+              Elytra
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="control-section">
+        <h1>Skin</h1>
+        <div>
+          <div class="control">
+            <label>
+              URL:
+              <select v-model="skinUrl">
+                <option v-for="url in BUILTIN_SKINS" :key="url" :value="url">
+                  {{ url }}
+                </option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="control">
+            Model:
+            <select v-model="skinOptions.model">
+              <option selected value="auto-detect">Auto detect</option>
+              <option value="default">Default</option>
+              <option value="slim">Slim</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="control-section">
+        <h1>Cape</h1>
         <div class="control">
           <label>
             URL:
-            <select v-model="skinUrl">
-              <option v-for="url in BUILTIN_SKINS" :key="url" :value="url">
+            <select v-model="capeUrl">
+              <option v-for="url in BUILTIN_CAPES" :key="url" :value="url">
                 {{ url }}
               </option>
             </select>
           </label>
         </div>
       </div>
+      <div class="control-section">
+        <h1>Ears</h1>
+        <div>
+          <label class="control">
+            <input v-model="skinOptions.ears" type="checkbox" />
+            Enable
+          </label>
+        </div>
+      </div>
+      <div class="control-section">
+        <h1>Panorama</h1>
+        <div class="control">
+          <label class="control">
+            <input v-model="panorama" type="checkbox" />
+            Enable
+          </label>
+        </div>
+      </div>
+      <div class="control-section">
+        <h1>Name Tag</h1>
+        <div class="control">
+          <label>
+            Text:
+            <input v-model="nameTag" placeholder="none" size="20" type="text" />
+          </label>
+        </div>
+      </div>
+    </section>
+    <footer :class="{ newUi: usingNewUI }">
       <div>
-        <label class="control">
-          Model:
-          <select v-model="skinOptions.model">
-            <option selected value="auto-detect">Auto detect</option>
-            <option value="default">Default</option>
-            <option value="slim">Slim</option>
-          </select>
-        </label>
+        GitHub:
+        <a href="https://github.com/so1ve/vue-skinview3d">
+          so1ve/vue-skinview3d
+        </a>
+        <span
+          class="use_new_ui"
+          :class="{ newUi: usingNewUI }"
+          @click="useNewUIEvent"
+        >
+          {{ usingNewUI ? "关闭" : "使用" }}新UI
+        </span>
       </div>
-    </div>
-    <div class="control-section">
-      <h1>Cape</h1>
-      <div class="control">
-        <label>
-          URL:
-          <select v-model="capeUrl">
-            <option v-for="url in BUILTIN_CAPES" :key="url" :value="url">
-              {{ url }}
-            </option>
-          </select>
-        </label>
-      </div>
-    </div>
-    <div class="control-section">
-      <h1>Ears</h1>
-      <div>
-        <label class="control">
-          <input v-model="skinOptions.ears" type="checkbox" />
-          Enable
-        </label>
-      </div>
-    </div>
-    <div class="control-section">
-      <h1>Panorama</h1>
-      <div class="control">
-        <label class="control">
-          <input v-model="panorama" type="checkbox" />
-          Enable
-        </label>
-      </div>
-    </div>
-    <div class="control-section">
-      <h1>Name Tag</h1>
-      <div class="control">
-        <label>
-          Text:
-          <input v-model="nameTag" placeholder="none" size="20" type="text" />
-        </label>
-      </div>
-    </div>
+    </footer>
   </div>
-  <footer>
-    <div>
-      GitHub:
-      <a href="https://github.com/so1ve/vue-skinview3d">so1ve/vue-skinview3d</a>
-    </div>
-  </footer>
 </template>
+
+<style>
+.container.newUi {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: 40% 60%;
+  grid-template-rows: calc(100% - 60px) 60px;
+  grid-template-areas: "skin_view_3d controls" "footer footer";
+}
+.skin_view_3d.newUi {
+  grid-area: skin_view_3d;
+}
+footer.newUi {
+  grid-area: footer;
+}
+.controls.newUi {
+  grid-area: controls;
+  display: grid;
+  justify-content: start;
+  padding: 0 2rem;
+  overflow: auto;
+}
+.controls.newUi .control-section {
+  display: grid;
+}
+.use_new_ui {
+  cursor: pointer;
+  margin-left: 2rem;
+  color: aqua;
+}
+.use_new_ui.newUi {
+  color: gray;
+}
+</style>
