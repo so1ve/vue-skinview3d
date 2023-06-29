@@ -132,8 +132,8 @@ onMounted(adjustUI);
 </script>
 
 <template>
-  <div class="container" :class="{ newUi: enableNewUI }">
-    <section ref="skinRef" class="section" :class="{ newUi: enableNewUI }">
+  <div class="container" :class="{ 'new-ui': enableNewUI }">
+    <section ref="skinRef" class="section" :class="{ 'new-ui': enableNewUI }">
       <SkinView3d
         :animation="animation"
         :auto-rotate="autoRotate"
@@ -156,7 +156,7 @@ onMounted(adjustUI);
         :zoom="zoom"
       />
     </section>
-    <section class="controls" :class="{ newUi: enableNewUI }">
+    <section class="controls" :class="{ 'new-ui': enableNewUI }">
       <div class="control-section">
         <h1>Viewport</h1>
         <div>
@@ -447,7 +447,7 @@ onMounted(adjustUI);
         </div>
       </div>
     </section>
-    <footer :class="{ newUi: enableNewUI }">
+    <footer :class="{ 'new-ui': enableNewUI }">
       <div>
         GitHub:
         <a href="https://github.com/so1ve/vue-skinview3d">
@@ -463,7 +463,7 @@ onMounted(adjustUI);
 </template>
 
 <style scoped>
-.container.newUi {
+.container.new-ui {
   display: grid;
   width: 100%;
   height: 100%;
@@ -471,20 +471,20 @@ onMounted(adjustUI);
   grid-template-rows: calc(100% - 60px) 60px;
   grid-template-areas: "skin_view_3d controls" "footer footer";
 }
-.section.newUi {
+.section.new-ui {
   grid-area: skin_view_3d;
 }
-footer.newUi {
+footer.new-ui {
   grid-area: footer;
 }
-.controls.newUi {
+.controls.new-ui {
   grid-area: controls;
   display: grid;
   justify-content: start;
   padding: 0 2rem;
   overflow: auto;
 }
-.controls.newUi .control-section {
+.controls.new-ui .control-section {
   display: grid;
 }
 </style>
