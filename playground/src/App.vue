@@ -5,7 +5,6 @@ import type {
   PlayerAnimation,
   SkinLoadOptions,
 } from "skinview3d";
-import type { Ref } from "vue";
 import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import type { Background, Layers } from "vue-skinview3d";
 import {
@@ -105,7 +104,7 @@ const background = computed<Background | undefined>(() =>
     : undefined,
 );
 const nameTag = ref("Hatsune Miku");
-const skinRef: Ref<HTMLElement | undefined> = ref();
+const skinRef = ref<HTMLElement | null>(null);
 
 const enableWideUI = useLocalStorage("enableWideUI", false);
 const wideUIClass = computed(() => ({ "wide-ui": enableWideUI.value }));
