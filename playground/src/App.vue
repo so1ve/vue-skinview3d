@@ -120,14 +120,13 @@ function onResize() {
     width.value = skinRef.value!.offsetWidth;
   }
 }
-function adjustUI() {
+async function adjustUI() {
+  await nextTick();
   if (enableWideUI.value) {
-    nextTick(onResize);
+    onResize();
   } else {
-    nextTick(() => {
-      height.value = DEFAULT_HEIGHT;
-      width.value = DEFAULT_WIDTH;
-    });
+    height.value = DEFAULT_HEIGHT;
+    width.value = DEFAULT_WIDTH;
   }
 }
 </script>
