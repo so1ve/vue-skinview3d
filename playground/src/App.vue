@@ -107,21 +107,21 @@ const background = computed<Background | undefined>(() =>
 const nameTag = ref("Hatsune Miku");
 const skinRef: Ref<HTMLElement | undefined> = ref();
 
-const enableNewUI = useLocalStorage("enableNewUI", false);
-const newUIClass = computed(() => ({ "new-ui": enableNewUI.value }));
+const enableWideUI = useLocalStorage("enableWideUI", false);
+const wideUIClass = computed(() => ({ "wide-ui": enableWideUI.value }));
 
 onMounted(adjustUI);
-watch(enableNewUI, adjustUI);
+watch(enableWideUI, adjustUI);
 useEventListener("resize", onResize);
 
 function onResize() {
-  if (enableNewUI.value) {
+  if (enableWideUI.value) {
     height.value = skinRef.value!.offsetHeight;
     width.value = skinRef.value!.offsetWidth;
   }
 }
 function adjustUI() {
-  if (enableNewUI.value) {
+  if (enableWideUI.value) {
     nextTick(onResize);
   } else {
     nextTick(() => {
@@ -133,8 +133,8 @@ function adjustUI() {
 </script>
 
 <template>
-  <div class="container" :class="newUIClass">
-    <section ref="skinRef" class="section" :class="newUIClass">
+  <div class="container" :class="wideUIClass">
+    <section ref="skinRef" class="section" :class="wideUIClass">
       <SkinView3d
         :animation="animation"
         :auto-rotate="autoRotate"
@@ -157,7 +157,7 @@ function adjustUI() {
         :zoom="zoom"
       />
     </section>
-    <section class="controls" :class="newUIClass">
+    <section class="controls" :class="wideUIClass">
       <div class="control-section">
         <h1>Viewport</h1>
         <div>
@@ -448,15 +448,15 @@ function adjustUI() {
         </div>
       </div>
     </section>
-    <footer :class="newUIClass">
+    <footer :class="wideUIClass">
       <div>
         GitHub:
         <a href="https://github.com/so1ve/vue-skinview3d">
           so1ve/vue-skinview3d
         </a>
         <label class="control">
-          <input v-model="enableNewUI" type="checkbox" />
-          Enable new UI
+          <input v-model="enableWideUI" type="checkbox" />
+          Enable wide UI
         </label>
       </div>
     </footer>
@@ -464,7 +464,7 @@ function adjustUI() {
 </template>
 
 <style scoped>
-.container.new-ui {
+.container.wide-ui {
   display: grid;
   width: 100%;
   height: 100%;
@@ -472,20 +472,20 @@ function adjustUI() {
   grid-template-rows: calc(100% - 60px) 60px;
   grid-template-areas: "section controls" "footer footer";
 }
-.section.new-ui {
+.section.wide-ui {
   grid-area: section;
 }
-footer.new-ui {
+footer.wide-ui {
   grid-area: footer;
 }
-.controls.new-ui {
+.controls.wide-ui {
   grid-area: controls;
   display: grid;
   justify-content: start;
   padding: 0 2rem;
   overflow: auto;
 }
-.controls.new-ui .control-section {
+.controls.wide-ui .control-section {
   display: grid;
 }
 </style>
