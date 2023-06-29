@@ -1,18 +1,12 @@
 <script setup lang="ts">
+import { useEventListener, useLocalStorage } from "@vueuse/core";
 import type {
   CapeLoadOptions,
   PlayerAnimation,
   SkinLoadOptions,
 } from "skinview3d";
 import type { Ref } from "vue";
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  reactive,
-  ref,
-} from "vue";
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import type { Background, Layers } from "vue-skinview3d";
 import {
   FlyingAnimation,
@@ -43,8 +37,10 @@ const BUILTIN_CAPES = [
   "img/hd_cape.png",
 ];
 
-const width = ref(300);
-const height = ref(300);
+const DEFAULT_WIDTH = 300;
+const DEFAULT_HEIGHT = 300;
+const width = ref(DEFAULT_WIDTH);
+const height = ref(DEFAULT_HEIGHT);
 const fov = ref(70);
 const zoom = ref(0.6);
 const globalLight = ref(0.4);
@@ -109,51 +105,35 @@ const background = computed<Background | undefined>(() =>
     : undefined,
 );
 const nameTag = ref("Hatsune Miku");
-const usingNewUI = ref(
-  localStorage.getItem("usingNewUI") === "1" ? true : false || false,
-);
 const skinRef: Ref<HTMLElement | undefined> = ref();
-const listener: any = window.addEventListener("resize", () => {
-  if (usingNewUI.value) {
+
+const enableNewUI = useLocalStorage("enableNewUI", false);
+
+watch(enableNewUI, adjustUI);
+useEventListener("resize", onResize);
+
+function onResize() {
+  if (enableNewUI.value) {
     height.value = skinRef.value!.offsetHeight;
     width.value = skinRef.value!.offsetWidth;
   }
-});
-function changeUI() {
-  if (usingNewUI.value) {
-    document.querySelector("html")?.classList.add("new_ui");
-    document.querySelector("body")?.classList.add("new_ui");
-    document.querySelector("#app")?.classList.add("new_ui");
-    nextTick(() => {
-      height.value = skinRef.value!.offsetHeight;
-      width.value = skinRef.value!.offsetWidth;
-    });
+}
+function adjustUI() {
+  if (enableNewUI.value) {
+    nextTick(onResize);
   } else {
-    document.querySelector("html")?.classList.remove("new_ui");
-    document.querySelector("body")?.classList.remove("new_ui");
-    document.querySelector("#app")?.classList.remove("new_ui");
     nextTick(() => {
-      height.value = 300;
-      width.value = 300;
+      height.value = DEFAULT_HEIGHT;
+      width.value = DEFAULT_WIDTH;
     });
   }
 }
-onMounted(() => {
-  changeUI();
-});
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", listener);
-});
-function useNewUIEvent() {
-  usingNewUI.value = !usingNewUI.value;
-  localStorage.setItem("usingNewUI", usingNewUI.value ? "1" : "0");
-  changeUI();
-}
+onMounted(adjustUI);
 </script>
 
 <template>
-  <div class="container" :class="{ newUi: usingNewUI }">
-    <section ref="skinRef" class="skin_view_3d" :class="{ newUi: usingNewUI }">
+  <div class="container" :class="{ newUi: enableNewUI }">
+    <section ref="skinRef" class="section" :class="{ newUi: enableNewUI }">
       <SkinView3d
         :animation="animation"
         :auto-rotate="autoRotate"
@@ -176,7 +156,7 @@ function useNewUIEvent() {
         :zoom="zoom"
       />
     </section>
-    <section class="controls" :class="{ newUi: usingNewUI }">
+    <section class="controls" :class="{ newUi: enableNewUI }">
       <div class="control-section">
         <h1>Viewport</h1>
         <div>
@@ -467,25 +447,22 @@ function useNewUIEvent() {
         </div>
       </div>
     </section>
-    <footer :class="{ newUi: usingNewUI }">
+    <footer :class="{ newUi: enableNewUI }">
       <div>
         GitHub:
         <a href="https://github.com/so1ve/vue-skinview3d">
           so1ve/vue-skinview3d
         </a>
-        <span
-          class="use_new_ui"
-          :class="{ newUi: usingNewUI }"
-          @click="useNewUIEvent"
-        >
-          {{ usingNewUI ? "关闭" : "使用" }}新UI
-        </span>
+        <label class="control">
+          <input v-model="enableNewUI" type="checkbox" />
+          Enable new UI
+        </label>
       </div>
     </footer>
   </div>
 </template>
 
-<style>
+<style scoped>
 .container.newUi {
   display: grid;
   width: 100%;
@@ -494,7 +471,7 @@ function useNewUIEvent() {
   grid-template-rows: calc(100% - 60px) 60px;
   grid-template-areas: "skin_view_3d controls" "footer footer";
 }
-.skin_view_3d.newUi {
+.section.newUi {
   grid-area: skin_view_3d;
 }
 footer.newUi {
@@ -509,13 +486,5 @@ footer.newUi {
 }
 .controls.newUi .control-section {
   display: grid;
-}
-.use_new_ui {
-  cursor: pointer;
-  margin-left: 2rem;
-  color: aqua;
-}
-.use_new_ui.newUi {
-  color: gray;
 }
 </style>

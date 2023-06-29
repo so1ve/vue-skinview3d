@@ -2,20 +2,6 @@
   font-family: "Minecraft";
   src: url("/font/minecraft.woff2") format("woff2");
 }
-html.new_ui{
-  width: 100%;
-  height: 100%;
-}
-body.new_ui {
-  width: calc(100% - 5px);
-  height: calc(100% - 5px);
-  font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-  margin: 5px;
-}
-#app.new_ui{
-  width: 100%;
-  height: 100%;
-}
 
 h1 {
   font-size: 1.25em;
