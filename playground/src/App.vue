@@ -108,7 +108,9 @@ const nameTag = ref("Hatsune Miku");
 const skinRef: Ref<HTMLElement | undefined> = ref();
 
 const enableNewUI = useLocalStorage("enableNewUI", false);
+const newUIClass = computed(() => ({ "new-ui": enableNewUI.value }));
 
+onMounted(adjustUI);
 watch(enableNewUI, adjustUI);
 useEventListener("resize", onResize);
 
@@ -128,12 +130,11 @@ function adjustUI() {
     });
   }
 }
-onMounted(adjustUI);
 </script>
 
 <template>
-  <div class="container" :class="{ 'new-ui': enableNewUI }">
-    <section ref="skinRef" class="section" :class="{ 'new-ui': enableNewUI }">
+  <div class="container" :class="newUIClass">
+    <section ref="skinRef" class="section" :class="newUIClass">
       <SkinView3d
         :animation="animation"
         :auto-rotate="autoRotate"
@@ -156,7 +157,7 @@ onMounted(adjustUI);
         :zoom="zoom"
       />
     </section>
-    <section class="controls" :class="{ 'new-ui': enableNewUI }">
+    <section class="controls" :class="newUIClass">
       <div class="control-section">
         <h1>Viewport</h1>
         <div>
@@ -447,7 +448,7 @@ onMounted(adjustUI);
         </div>
       </div>
     </section>
-    <footer :class="{ 'new-ui': enableNewUI }">
+    <footer :class="newUIClass">
       <div>
         GitHub:
         <a href="https://github.com/so1ve/vue-skinview3d">
@@ -469,10 +470,10 @@ onMounted(adjustUI);
   height: 100%;
   grid-template-columns: 40% 60%;
   grid-template-rows: calc(100% - 60px) 60px;
-  grid-template-areas: "skin_view_3d controls" "footer footer";
+  grid-template-areas: "section controls" "footer footer";
 }
 .section.new-ui {
-  grid-area: skin_view_3d;
+  grid-area: section;
 }
 footer.new-ui {
   grid-area: footer;
