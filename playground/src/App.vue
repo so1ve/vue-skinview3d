@@ -464,8 +464,11 @@ async function adjustUI() {
 <style scoped>
 .container.wide-ui {
   display: grid;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
   grid-template-columns: 40% 60%;
   grid-template-rows: calc(100% - 60px) 60px;
   grid-template-areas: "section controls" "footer footer";
