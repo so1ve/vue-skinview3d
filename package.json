@@ -5,8 +5,8 @@
   "author": "Ray <i@mk1.io> (@so1ve)",
   "description": "Three.js powered Minecraft skin viewer. (Vue binding of skinview3d)",
   "keywords": [
-    "minecraft",
     "canvas",
+    "minecraft",
     "skin"
   ],
   "homepage": "https://github.com/so1ve/vue-skinview3d#readme",
