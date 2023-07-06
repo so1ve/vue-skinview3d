@@ -304,7 +304,7 @@ async function adjustUI() {
         <table>
           <thead>
             <tr>
-              <th></th>
+              <th />
               <th>head</th>
               <th>body</th>
               <th>right arm</th>
