@@ -23,6 +23,15 @@ const LAYER_PARTS = [
   "leftLeg",
 ] as const;
 const LAYER_TYPES = ["inner", "outer"] as const;
+const VIEWER_PROPS = [
+  "fov",
+  "zoom",
+  "autoRotate",
+  "autoRotateSpeed",
+  "animation",
+  "nameTag",
+] as const;
+const CONTROLS_PROPS = ["enableRotate", "enableZoom", "enablePan"] as const;
 
 export const SkinView3d = defineComponent({
   name: "SkinView3d",
@@ -144,14 +153,7 @@ export const SkinView3d = defineComponent({
       viewer.value?.setSize(Number(props.width), Number(props.height));
     });
 
-    for (const prop of [
-      "fov",
-      "zoom",
-      "autoRotate",
-      "autoRotateSpeed",
-      "animation",
-      "nameTag",
-    ] as const) {
+    for (const prop of VIEWER_PROPS) {
       watchPostEffect(() => {
         viewer.value && ((viewer.value[prop] as any) = props[prop]);
       });
@@ -184,7 +186,7 @@ export const SkinView3d = defineComponent({
       viewer.value?.loadCape(props.capeUrl, props.capeOptions);
     });
 
-    for (const prop of ["enableRotate", "enableZoom", "enablePan"] as const) {
+    for (const prop of CONTROLS_PROPS) {
       watchPostEffect(() => {
         viewer.value && (viewer.value.controls[prop] = props[prop]);
       });
