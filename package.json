@@ -24,6 +24,11 @@
 			"types": "./dist/index.d.ts",
 			"require": "./dist/index.cjs",
 			"import": "./dist/index.mjs"
+		},
+		"./animations": {
+			"types": "./dist/animations.d.ts",
+			"require": "./dist/animations.cjs",
+			"import": "./dist/animations.mjs"
 		}
 	},
 	"main": "./dist/index.cjs",

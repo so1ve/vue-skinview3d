@@ -7,13 +7,13 @@ import type {
 } from "skinview3d";
 import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import type { Background, Layers } from "vue-skinview3d";
+import { SkinView3d } from "vue-skinview3d";
 import {
 	FlyingAnimation,
 	IdleAnimation,
 	RunningAnimation,
-	SkinView3d,
 	WalkingAnimation,
-} from "vue-skinview3d";
+} from "vue-skinview3d/animations";
 
 const availableAnimations = {
 	idle: new IdleAnimation(),

@@ -6,13 +6,6 @@ import { defineComponent, h, ref, shallowRef, watchPostEffect } from "vue";
 import type { Background, CapeOptions, Layers, SkinOptions } from "./types";
 
 export * from "./types";
-export {
-	FlyingAnimation,
-	FunctionAnimation,
-	IdleAnimation,
-	RunningAnimation,
-	WalkingAnimation,
-} from "skinview3d";
 
 const LAYER_PARTS = [
 	"head",
