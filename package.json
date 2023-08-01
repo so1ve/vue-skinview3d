@@ -1,75 +1,76 @@
 {
-  "name": "vue-skinview3d",
-  "version": "0.2.4",
-  "packageManager": "pnpm@8.6.9",
-  "author": "Ray <i@mk1.io> (@so1ve)",
-  "description": "Three.js powered Minecraft skin viewer. (Vue binding of skinview3d)",
-  "keywords": [
-    "canvas",
-    "minecraft",
-    "skin"
-  ],
-  "homepage": "https://github.com/so1ve/vue-skinview3d#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/so1ve/vue-skinview3d.git"
-  },
-  "bugs": {
-    "url": "https://github.com/so1ve/vue-skinview3d/issues"
-  },
-  "license": "MIT",
-  "sideEffects": false,
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
-    }
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
-      ]
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "unbuild",
-    "build:play": "npm -C playground run build",
-    "dev": "nr play",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "play": "npm -C playground run dev",
-    "prepublishOnly": "nr build",
-    "release": "bumpp --commit --push --tag && pnpm publish",
-    "typecheck": "vue-tsc --noEmit"
-  },
-  "dependencies": {
-    "skinview3d": "3.0.0-alpha.1"
-  },
-  "devDependencies": {
-    "@antfu/ni": "^0.21.4",
-    "@so1ve/eslint-config": "^0.110.0",
-    "@types/node": "^18.16.18",
-    "@vue/runtime-core": "^3.3.4",
-    "bumpp": "^9.1.1",
-    "eslint": "^8.42.0",
-    "prettier": "^2.8.8",
-    "typescript": "^5.0.4",
-    "unbuild": "^1.2.1",
-    "vue-tsc": "^1.6.5"
-  },
-  "peerDependencies": {
-    "vue": "^3.3.4"
-  }
+	"name": "vue-skinview3d",
+	"version": "0.2.4",
+	"packageManager": "pnpm@8.6.9",
+	"author": "Ray <i@mk1.io> (@so1ve)",
+	"description": "Three.js powered Minecraft skin viewer. (Vue binding of skinview3d)",
+	"keywords": [
+		"canvas",
+		"minecraft",
+		"skin"
+	],
+	"homepage": "https://github.com/so1ve/vue-skinview3d#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/so1ve/vue-skinview3d.git"
+	},
+	"bugs": {
+		"url": "https://github.com/so1ve/vue-skinview3d/issues"
+	},
+	"license": "MIT",
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.mjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"*": [
+				"./dist/*",
+				"./dist/index.d.ts"
+			]
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "unbuild",
+		"build:play": "npm -C playground run build",
+		"dev": "nr play",
+		"lint": "eslint . && prettier . --check",
+		"lint:fix": "eslint . --fix && prettier . --write",
+		"play": "npm -C playground run dev",
+		"prepublishOnly": "nr build",
+		"release": "bumpp --commit --push --tag && pnpm publish",
+		"typecheck": "vue-tsc --noEmit"
+	},
+	"dependencies": {
+		"skinview3d": "3.0.0-alpha.1"
+	},
+	"devDependencies": {
+		"@antfu/ni": "^0.21.4",
+		"@so1ve/eslint-config": "^0.117.4",
+		"@so1ve/prettier-config": "^0.117.4",
+		"@types/node": "^18.16.18",
+		"@vue/runtime-core": "^3.3.4",
+		"bumpp": "^9.1.1",
+		"eslint": "^8.46.0",
+		"prettier": "^3.0.0",
+		"typescript": "^5.0.4",
+		"unbuild": "^1.2.1",
+		"vue-tsc": "^1.6.5"
+	},
+	"peerDependencies": {
+		"vue": "^3.3.4"
+	}
 }
