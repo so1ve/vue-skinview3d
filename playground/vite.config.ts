@@ -11,6 +11,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"vue-skinview3d": join(__dirname, "../src/index.ts"),
+			"vue-skinview3d/animations": join(__dirname, "../src/animations.ts"),
 		},
 	},
 });
