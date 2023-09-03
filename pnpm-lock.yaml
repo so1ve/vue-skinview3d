@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       skinview3d:
-        specifier: 3.0.0-alpha.1
-        version: 3.0.0-alpha.1
+        specifier: 3.0.0
+        version: 3.0.0
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -1163,10 +1163,6 @@ packages:
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: true
-
-  /@types/offscreencanvas@2019.7.0:
-    resolution: {integrity: sha512-PGcyveRIpL1XIqK8eBsmRBt76eFgtzuPiSTyKHZxnGemp2yzGzWpjYKAfK3wIMiU7eH+851yEpiuP8JZerTmWg==}
-    dev: false
 
   /@types/parse-author@2.0.1:
     resolution: {integrity: sha512-2RNXvvDY+7ITl/Q3znDpW9DxyAckKgLCXpoiBHN9BeLH1aV7z/W657P2+PK3wVUgGWXtc99ZQy3LkJTGlxLsvA==}
@@ -4659,17 +4655,15 @@ packages:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: true
 
-  /skinview-utils@0.7.0:
-    resolution: {integrity: sha512-ecbbUp0AuvZX5fCIOOwbNPxr/JIbrAGhCcdLcww0Ov9PbvAbeYjNDSIu1ebCJBe4CWc6ZYYn8MFNp68DDta0iQ==}
-    dependencies:
-      '@types/offscreencanvas': 2019.7.0
+  /skinview-utils@0.7.1:
+    resolution: {integrity: sha512-4eLrMqR526ehlZbsd8SuZ/CHpS9GiH0xUMoV+PYlJVi95ZFz5HJu7Spt5XYa72DRS7wgt5qquvHZf0XZJgmu9Q==}
     dev: false
 
-  /skinview3d@3.0.0-alpha.1:
-    resolution: {integrity: sha512-Y5v5yxQIVZZwpQlnRHeVZ9pgDOETLkPrkeMcwJN92OFAYQ0+WTHy6WlZOu0M1DRys+h8iyBdxRb/9976ftt72Q==}
+  /skinview3d@3.0.0:
+    resolution: {integrity: sha512-wQJDDhNfHmRuOhORBnuKosVUiSjRKVn/jibl8zqSdHsQQqlihEkUdwb4He1ts4pvkl/7G5mna2vpgdxxhRUVfg==}
     dependencies:
       '@types/three': 0.142.0
-      skinview-utils: 0.7.0
+      skinview-utils: 0.7.1
       three: 0.142.0
     dev: false
 
