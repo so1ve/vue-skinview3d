@@ -64,7 +64,7 @@
 	},
 	"devDependencies": {
 		"@antfu/ni": "^0.21.4",
-		"@so1ve/eslint-config": "^0.119.3",
+		"@so1ve/eslint-config": "^0.123.0",
 		"@so1ve/prettier-config": "^0.119.3",
 		"@types/node": "^18.16.18",
 		"@vue/runtime-core": "^3.3.4",
