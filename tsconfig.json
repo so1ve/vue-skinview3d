@@ -1,15 +1,15 @@
 {
 	"compilerOptions": {
 		"target": "ES2018",
-		"module": "ESNext",
 		"lib": ["ESNext", "DOM"],
+		"module": "ESNext",
 		"moduleResolution": "Node",
-		"esModuleInterop": true,
+		"resolveJsonModule": true,
 		"strict": true,
 		"strictNullChecks": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
+		"esModuleInterop": true,
 		"skipDefaultLibCheck": true,
+		"skipLibCheck": true,
 		"paths": {
 			"vue-skinview3d": ["./src/index.ts"]
 		}

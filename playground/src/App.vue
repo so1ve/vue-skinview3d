@@ -100,7 +100,7 @@ const background = computed<Background | undefined>(() =>
 		? {
 				type: "panorama",
 				value: panoramaUrl.value,
-		  }
+			}
 		: undefined,
 );
 const nameTag = ref("Hatsune Miku");
