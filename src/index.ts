@@ -29,11 +29,17 @@ const CONTROLS_PROPS = ["enableRotate", "enableZoom", "enablePan"] as const;
 export const SkinView3d = defineComponent({
 	name: "SkinView3d",
 	props: {
+		renderPaused: {
+			type: Boolean,
+			default: false,
+		},
 		width: {
 			type: Number,
+			required: true,
 		},
 		height: {
 			type: Number,
+			required: true,
 		},
 		fov: {
 			type: Number,
@@ -60,6 +66,7 @@ export const SkinView3d = defineComponent({
 		},
 		skinOptions: {
 			type: Object as PropType<SkinOptions>,
+			default: {},
 		},
 		capeUrl: {
 			type: String,
@@ -67,6 +74,7 @@ export const SkinView3d = defineComponent({
 		},
 		capeOptions: {
 			type: Object as PropType<CapeOptions>,
+			default: {},
 		},
 		enableRotate: {
 			type: Boolean,
@@ -143,6 +151,10 @@ export const SkinView3d = defineComponent({
 		});
 
 		watchPostEffect(() => {
+			viewer.value && (viewer.value.renderPaused = props.renderPaused);
+		});
+
+		watchPostEffect(() => {
 			viewer.value?.setSize(Number(props.width), Number(props.height));
 		});
 
@@ -163,10 +175,10 @@ export const SkinView3d = defineComponent({
 		watchPostEffect(() => {
 			// Force trigger watcher
 			// eslint-disable-next-line no-unused-expressions
-			props.skinOptions?.ears;
+			props.skinOptions.ears;
 			// eslint-disable-next-line no-unused-expressions
-			props.skinOptions?.model;
-			if (!props.skinOptions?.ears) {
+			props.skinOptions.model;
+			if (!props.skinOptions.ears) {
 				viewer.value?.loadEars(null);
 			}
 			viewer.value?.loadSkin(props.skinUrl, props.skinOptions);
@@ -175,7 +187,7 @@ export const SkinView3d = defineComponent({
 		watchPostEffect(() => {
 			// Force trigger watcher
 			// eslint-disable-next-line no-unused-expressions
-			props.capeOptions?.backEquipment;
+			props.capeOptions.backEquipment;
 			viewer.value?.loadCape(props.capeUrl, props.capeOptions);
 		});
 

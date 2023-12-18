@@ -36,6 +36,7 @@ const BUILTIN_CAPES = [
 	"img/hd_cape.png",
 ];
 
+const renderPaused = ref(false);
 const DEFAULT_WIDTH = 300;
 const DEFAULT_HEIGHT = 300;
 const width = ref(DEFAULT_WIDTH);
@@ -149,6 +150,7 @@ async function adjustUI() {
 				:height="height"
 				:layers="layers"
 				:name-tag="nameTag || null"
+				:render-paused="renderPaused"
 				:skin-options="skinOptions"
 				:skin-url="skinUrl"
 				:width="width"
@@ -156,6 +158,15 @@ async function adjustUI() {
 			/>
 		</section>
 		<section class="controls" :class="wideUIClass">
+			<div class="control-section">
+				<h1>Pause Render</h1>
+				<div>
+					<label class="control">
+						<input v-model="renderPaused" type="checkbox" />
+						Pause Render
+					</label>
+				</div>
+			</div>
 			<div class="control-section">
 				<h1>Viewport</h1>
 				<div>
