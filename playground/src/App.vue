@@ -47,14 +47,12 @@ const globalLight = ref(3);
 const cameraLight = ref(0.6);
 const autoRotate = ref(false);
 const autoRotateSpeed = ref(2);
-const animationType = ref("" as "" | keyof typeof availableAnimations);
+const animationType = ref(null as null | keyof typeof availableAnimations);
 const animationSpeed = ref(1);
 const animationPlaying = ref(true);
 const animation = computed<PlayerAnimation | null>(() => {
 	const animationClass =
-		animationType.value === ""
-			? null
-			: availableAnimations[animationType.value];
+		animationType.value && availableAnimations[animationType.value];
 	animationClass && (animationClass.speed = animationSpeed.value);
 	animationClass && (animationClass.paused = !animationPlaying.value);
 
@@ -246,7 +244,7 @@ async function adjustUI() {
 				<h1>Animation</h1>
 				<div>
 					<label>
-						<input v-model="animationType" checked type="radio" value="" />
+						<input v-model="animationType" checked type="radio" :value="null" />
 						None
 					</label>
 					<label>
