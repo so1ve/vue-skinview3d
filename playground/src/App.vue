@@ -108,6 +108,8 @@ const skinRef = ref<HTMLElement | null>(null);
 const enableWideUI = useLocalStorage("enableWideUI", false);
 const wideUIClass = computed(() => ({ "wide-ui": enableWideUI.value }));
 
+const viewerRef = ref<InstanceType<typeof SkinView3d> | null>(null);
+
 onMounted(adjustUI);
 watch(enableWideUI, adjustUI);
 useEventListener("resize", onResize);
@@ -127,12 +129,23 @@ async function adjustUI() {
 		width.value = DEFAULT_WIDTH;
 	}
 }
+
+function resetRotation() {
+	if (!viewerRef.value?.viewer) {
+		return;
+	}
+
+	viewerRef.value.viewer.playerWrapper.rotation.x = 0;
+	viewerRef.value.viewer.playerWrapper.rotation.y = 0;
+	viewerRef.value.viewer.playerWrapper.rotation.z = 0;
+}
 </script>
 
 <template>
 	<div class="container" :class="wideUIClass">
 		<section ref="skinRef" class="section" :class="wideUIClass">
 			<SkinView3d
+				ref="viewerRef"
 				:animation="animation"
 				:auto-rotate="autoRotate"
 				:auto-rotate-speed="autoRotateSpeed"
@@ -157,12 +170,15 @@ async function adjustUI() {
 		</section>
 		<section class="controls" :class="wideUIClass">
 			<div class="control-section">
-				<h1>Pause Render</h1>
+				<h1>Render</h1>
 				<div>
 					<label class="control">
 						<input v-model="renderPaused" type="checkbox" />
 						Pause Render
 					</label>
+					<button class="control" type="button" @click="resetRotation">
+						Reset Rotation
+					</button>
 				</div>
 			</div>
 			<div class="control-section">
