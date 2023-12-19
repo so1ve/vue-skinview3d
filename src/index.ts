@@ -26,7 +26,7 @@ const VIEWER_PROPS = [
 ] as const;
 const CONTROLS_PROPS = ["enableRotate", "enableZoom", "enablePan"] as const;
 
-export const SkinView3d = defineComponent({
+const SkinView3dImpl = defineComponent({
 	name: "SkinView3d",
 	props: {
 		renderPaused: {
@@ -131,7 +131,7 @@ export const SkinView3d = defineComponent({
 		},
 	},
 	setup: (props, { expose }) => {
-		const viewer = shallowRef<SkinViewer>();
+		const viewer = shallowRef<SkinViewer | null>(null);
 		const canvasRef = ref<HTMLCanvasElement>();
 
 		expose({ viewer });
@@ -227,3 +227,9 @@ export const SkinView3d = defineComponent({
 		return () => h("canvas", { ref: canvasRef });
 	},
 });
+
+export const SkinView3d = SkinView3dImpl as typeof SkinView3dImpl & {
+	new (): {
+		viewer: SkinViewer | null;
+	};
+};
