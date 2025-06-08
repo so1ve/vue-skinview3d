@@ -16,8 +16,8 @@ importers:
         version: 3.4.15(typescript@5.3.3)
     devDependencies:
       '@antfu/ni':
-        specifier: ^0.21.12
-        version: 0.21.12
+        specifier: ^0.23.0
+        version: 0.23.0
       '@so1ve/eslint-config':
         specifier: ^1.0.1
         version: 1.2.0(eslint-plugin-import@2.29.1)(eslint@8.56.0)(prettier@3.2.5)(typescript@5.3.3)
@@ -86,8 +86,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.22
     dev: true
 
-  /@antfu/ni@0.21.12:
-    resolution: {integrity: sha512-2aDL3WUv8hMJb2L3r/PIQWsTLyq7RQr3v9xD16fiz6O8ys1xEyLhhTOv8gxtZvJiTzjTF5pHoArvRdesGL1DMQ==}
+  /@antfu/ni@0.23.0:
+    resolution: {integrity: sha512-R5/GkA3PfGewAXLzz6lN5XagunF6PKeDtWt8dbZQXvHfebLS0qEczV+Azg/d+tKgSh6kRBpxvu8oSjARdPtw0A==}
     hasBin: true
     dev: true
 
